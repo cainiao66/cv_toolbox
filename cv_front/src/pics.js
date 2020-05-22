@@ -1,8 +1,8 @@
 import { Upload, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React from 'react';
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+//var baseUrl = "http://localhost:5000";
+var baseUrl = "";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ export default class PicturesWall extends React.Component {
       previewTitle: '',
       fileList: [],
       pics:[],
-      max_pic:this.props.max_pic
+      max_pic:this.props.max_pic,
     };
 
   }
@@ -32,11 +32,11 @@ export default class PicturesWall extends React.Component {
     /**
      * 针对图片进行压缩,如果图片大小超过压缩阈值,则执行压缩,否则不压缩
      */
-        const {compressThreshold = 1, isPictureCompress = true, pictureQuality = 0.92} = this.props;
+        const {compressThreshold = 1, pictureQuality = 0.92} = this.props;
         let fileSize = file.size / 1024 / 1024;
         // console.log('before compress, the file size is : ', fileSize + "M");
         //当开启图片压缩且图片大小大于等于压缩阈值,进行压缩
-        if ((fileSize >= compressThreshold) && isPictureCompress) {
+        if ((fileSize >= compressThreshold)) {
             //判断浏览器内核是否支持base64图片压缩
             if (typeof (FileReader) === 'undefined') {
                 return file;

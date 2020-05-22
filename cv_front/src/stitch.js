@@ -1,11 +1,11 @@
 import React from 'react';
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 const { Title, Paragraph, Text } = Typography;
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+//var baseUrl = "http://localhost:5000";
+var baseUrl = "";
 
 
 export default class Sift extends React.Component{
@@ -35,6 +35,7 @@ export default class Sift extends React.Component{
     a.dispatchEvent(event); 
   }
 
+
   onFinish = values => {
     if(this.state.pics.length<2){
       /*错误提示*/ 
@@ -48,7 +49,11 @@ export default class Sift extends React.Component{
       axios({
         method: 'post',
         url: baseUrl+'/cv_stitch',
-        data: {'image':this.state.pics},
+        data: {
+          'image':this.state.pics,
+          'color_adjust':values.color_adjust,
+          'direction':values.direction
+        },
       })
       .then((res) => {
         if(res.data=="fail"){
@@ -88,8 +93,17 @@ export default class Sift extends React.Component{
             <Col span={11}>
               <Card title="输入" bordered={true} style={{height:'100%'}}>
                 <Form {...this.formItemLayout} onFinish={this.onFinish}>
+                  <Form.Item name="direction" label="拼接方式" initialValue={1}>
+                    <Radio.Group name="radiogroup">
+                      <Radio value={1}>横向拼接</Radio>
+                      <Radio value={2}>纵向拼接</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                  <Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
+                    <Switch defaultChecked/>
+                  </Form.Item>
                   <Form.Item label="上传图片">
-                    <PicturesWall max_pic={2} getChildValue={this.getPic.bind(this)}></PicturesWall>
+                    <PicturesWall max_pic={2}  getChildValue={this.getPic.bind(this)}></PicturesWall>
                   </Form.Item>
                   <Form.Item wrapperCol={{ span: 18, offset: 8}}>
                     <Button type="primary" htmlType="submit">

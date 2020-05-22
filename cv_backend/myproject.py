@@ -56,9 +56,13 @@ def cv_harris():
 def cv_stitch():
     data = request.get_json(silent=True)
     images = data['image']
-    flag = Stitch(images[0],images[1],images[0])
+    direction = str(data['direction'])
+    color_adjust = str(data['color_adjust'])
+    print(direction)
+    print(color_adjust)
+    flag = Stitch(images[0],images[1],images[0],direction,color_adjust)
     if flag == False:
-        flag2 = Stitch(images[1],images[0],images[0])
+        flag2 = Stitch(images[1],images[0],images[0],direction,color_adjust)
         if flag2 == False:
             return jsonify("fail")
     with open('./output/'+images[0],'rb') as f:

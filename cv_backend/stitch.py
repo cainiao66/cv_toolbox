@@ -3,7 +3,7 @@ import numpy as np
 
 MIN_MATCH_COUNT = 20
 
-def Stitch(file1,file2,name):
+def Stitch(file1,file2,name,direction,color_adjust):
     img1 = cv2.imread('./upload/' + file1,1)
     img2 = cv2.imread('./upload/' + file2,1)
     sift = cv2.xfeatures2d.SIFT_create()
@@ -42,26 +42,50 @@ def Stitch(file1,file2,name):
     print(b)
     x, y, c = img2.shape
     # 根据变换矩阵将图像img1进行变换处理
-    img_transformA = cv2.warpPerspective(img1, M, (max(b[2][0],b[3][0]), x))
-    print(img_transformA.shape)
-    res = np.zeros((x,img_transformA.shape[1],3),dtype='uint8')
+    if(direction == '1'):
+        img_transformA = cv2.warpPerspective(img1, M, (max(b[2][0],b[3][0]), x))
+        res = np.zeros((x, img_transformA.shape[1], 3), dtype='uint8')
+    else:
+        img_transformA = cv2.warpPerspective(img1, M, (y, max(b[1][1],b[2][1])))
+        res = np.zeros((img_transformA.shape[0],y,3),dtype='uint8')
+    # print(res.shape)
+    # print(img_transformA.shape)
+    # print(img2.shape)
+    # np.copyto(res[0:img_transformA.shape[0],0:img_transformA.shape[1],:],img_transformA)
+    # np.copyto(res[0:img2.shape[0],0:img2.shape[1],:],img2)
     try:
+        print(res.shape)
+        print(img_transformA.shape)
+        print(img2.shape)
         np.copyto(res[0:img_transformA.shape[0],0:img_transformA.shape[1],:],img_transformA)
         np.copyto(res[0:img2.shape[0],0:img2.shape[1],:],img2)
     except ValueError:
         return False
     res = cv2.merge([res[:,:,0],res[:,:,1],res[:,:,2]])
+    print("res:",res)
 
-    start = min(b[1][0],b[2][0])
-    processWidth = y - start;
-    alpha = 1
-    for i in range(0,x):
-        for j in range(start,y):
-            if(img_transformA[i,j,0]==0 and img_transformA[i,j,1]==0 and img_transformA[i,j,2]==0):
-                alpha = 1
-            else:
-                alpha = (processWidth - (j - start)) / processWidth
-            res[i,j,:] = img2[i,j,:] * alpha + img_transformA[i,j,:] * (1 - alpha);
+    if(color_adjust == 'True' and direction == '1'):
+        start = min(b[1][0],b[2][0])
+        processWidth = y - start;
+        alpha = 1
+        for i in range(0,x):
+            for j in range(start,y):
+                if(img_transformA[i,j,0]==0 and img_transformA[i,j,1]==0 and img_transformA[i,j,2]==0):
+                    alpha = 1
+                else:
+                    alpha = (processWidth - (j - start)) / processWidth
+                res[i,j,:] = img2[i,j,:] * alpha + img_transformA[i,j,:] * (1 - alpha)
+    elif (color_adjust == 'True' and direction == '2'):
+        start = min(b[0][1],b[2][1])
+        processWidth = x - start;
+        alpha = 1
+        for i in range(0,y):
+            for j in range(start,x):
+                if(img_transformA[j,i,0]==0 and img_transformA[j,i,1]==0 and img_transformA[j,i,2]==0):
+                    alpha = 1
+                else:
+                    alpha = (processWidth - (j - start)) / processWidth
+                res[j,i,:] = img2[j,i,:] * alpha + img_transformA[j,i,:] * (1 - alpha)
 
 
     cv2.imwrite('./output/'+name,res)
@@ -92,8 +116,7 @@ def Stitch(file1,file2,name):
 
 
 if __name__ == '__main__':
-    flag = Stitch('img1.bmp','img2.bmp','img1.bmp')
+    flag = Stitch('8.jpg','9.jpg','d.jpg','2','True')
     if flag == False:
-        flag2 = Stitch('img2.bmp','img1.bmp','img1.bmp')
-    print(flag2)
+        flag2 = Stitch('9.jpg','8.jpg','c.jpg','2','True')
 
