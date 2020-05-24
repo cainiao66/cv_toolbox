@@ -56,7 +56,7 @@ export default class App extends React.Component {
                 Harris角点检测
               </Menu.Item>
               <Menu.Item key="3" icon={<PictureOutlined />}>
-                全景拼接
+                图片全景拼接
               </Menu.Item>
             </Menu>
           </Sider>

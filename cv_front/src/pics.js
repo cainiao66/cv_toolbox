@@ -22,7 +22,6 @@ export default class PicturesWall extends React.Component {
       previewTitle: '',
       fileList: [],
       pics:[],
-      max_pic:this.props.max_pic,
     };
 
   }
@@ -180,7 +179,7 @@ export default class PicturesWall extends React.Component {
           pictureQuality={0.92}   //图片质量
           compressThreshold={1}  //压缩阈值
         >
-          {fileList.length >= this.state.max_pic ? null : uploadButton}
+          {fileList.length >= this.props.max_pic ? null : uploadButton}
         </Upload>
         <Modal
           visible={previewVisible}

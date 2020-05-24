@@ -1,6 +1,6 @@
 import React from 'react';
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio,Progress} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 const { Title, Paragraph, Text } = Typography;
@@ -18,6 +18,17 @@ export default class Sift extends React.Component{
     pics:[],
     out_pic:null,
     output:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+    pic_help:"",
+    pic_num:2,
+    direction:<Form.Item name="direction" label="拼接方式" initialValue={1}>
+                <Radio.Group name="radiogroup">
+                  <Radio value={1}>横向拼接</Radio>
+                  <Radio value={2}>纵向拼接</Radio>
+                </Radio.Group>
+              </Form.Item>,
+    color: <Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
+            <Switch defaultChecked/>
+          </Form.Item>
   }
 
   getPic = (val) =>{
@@ -41,9 +52,12 @@ export default class Sift extends React.Component{
       /*错误提示*/ 
       message.info("请输入至少两张图片");
     }
+    else if(this.state.pics.length>this.state.pic_num){
+      message.info("双图拼接最多输入两张图片");
+    }
     else{
       this.setState({
-        output:<Spin tip="Loading..."/>,
+        output:<Spin></Spin> 
       })
       console.log('Received values of form: ', values);
       axios({
@@ -51,26 +65,38 @@ export default class Sift extends React.Component{
         url: baseUrl+'/cv_stitch',
         data: {
           'image':this.state.pics,
+          'pic_num':values.pic_num,
           'color_adjust':values.color_adjust,
           'direction':values.direction
         },
       })
       .then((res) => {
-        if(res.data=="fail"){
-          message.error("您输入的两张图片匹配点数目不够，无法完成拼接！");
+        if(res.data=="-1"){
+          message.error("拼接失败！图片匹配度不够");
+          this.setState({
+            output:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+          })
+        }
+        else if(res.data=='-2'){
+          message.error("拼接失败！图片匹配异常");
+          this.setState({
+            output:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+          })
+        }
+        else if(res.data=='-3'){
+          message.error("拼接失败！暂不支持多图拼接");
           this.setState({
             output:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />,
           })
         }
         else{
           this.setState({
-            out_pic:"data:image/jpg;base64,"+res.data
+            out_pic:"data:image/jpg;base64,"+res.data,
           })
           this.setState({
             output: <Card hoverable cover={<img src={this.state.out_pic} />}><Button onClick={this.downloadPic} block type="primary" icon={<DownloadOutlined />} >Download</Button> </Card> 
           })
         }
-        console.log(res)
       })
       .catch((error) => {
         message.error("网络错误或服务器故障，请重试或联系开发者！");
@@ -81,29 +107,54 @@ export default class Sift extends React.Component{
     }
   };
 
+  onChange = e =>{
+    console.log(e.target.value)
+    if(e.target.value == 2){
+      this.setState({
+        direction:<Form.Item name="direction" label="拼接方式" initialValue={1}>
+                    <Radio.Group name="radiogroup">
+                      <Radio value={1}>横向拼接</Radio>
+                       <Radio value={2}>纵向拼接</Radio>
+                    </Radio.Group>
+                  </Form.Item>,
+        color:<Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
+                <Switch defaultChecked/>
+              </Form.Item>
+      });
+    }
+    else{
+      this.setState({
+        direction:<div></div>,
+        color:<div></div>,
+      });
+    }
+    this.setState({
+      pic_num: e.target.value,
+    });
+  }
+
   render(){
     return (
         <Typography>
-          <Title level={4}>全景拼接</Title>
+          <Title level={4}>图片全景拼接</Title>
           <Divider />
           <Paragraph>
-            输入两张有重合部分的图片，进行图片自动拼接
+            目前支持双图拼接和多图拼接（最多8张图片）两种模式，双图拼接支持横向纵向两种模式，多图拼接目前只支持横向拼接
           </Paragraph>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col span={11}>
               <Card title="输入" bordered={true} style={{height:'100%'}}>
                 <Form {...this.formItemLayout} onFinish={this.onFinish}>
-                  <Form.Item name="direction" label="拼接方式" initialValue={1}>
-                    <Radio.Group name="radiogroup">
-                      <Radio value={1}>横向拼接</Radio>
-                      <Radio value={2}>纵向拼接</Radio>
+                  <Form.Item name="pic_num" label="图片数目" initialValue={2}>
+                    <Radio.Group name="radiogroup" onChange={this.onChange}>
+                      <Radio value={2}>双图拼接</Radio>
+                      <Radio value={8}>多图拼接</Radio>
                     </Radio.Group>
                   </Form.Item>
-                  <Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
-                    <Switch defaultChecked/>
-                  </Form.Item>
-                  <Form.Item label="上传图片">
-                    <PicturesWall max_pic={2}  getChildValue={this.getPic.bind(this)}></PicturesWall>
+                  {this.state.direction}
+                  {this.state.color}
+                  <Form.Item label="上传图片"  help={this.state.pic_help}>
+                    <PicturesWall max_pic={this.state.pic_num}  getChildValue={this.getPic.bind(this)}></PicturesWall>
                   </Form.Item>
                   <Form.Item wrapperCol={{ span: 18, offset: 8}}>
                     <Button type="primary" htmlType="submit">
