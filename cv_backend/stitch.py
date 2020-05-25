@@ -38,13 +38,17 @@ MIN_MATCH_COUNT = 20
 #         newtemp.append(res)
 #     return True,step,newtemp
 
-def Stitch2(filenames,name):
+def Stitch2(filenames,name,mode):
     time1 = time.time()
     imgs = []
     for img_name in filenames:
         img = cv2.imread('./upload/'+img_name,1)
         imgs.append(img)
-    stitcher = cv2.createStitcher(cv2.Stitcher_PANORAMA)  # cv.Stitcher_SCANS
+    stitcher = None
+    if mode=='1':
+        stitcher = cv2.createStitcher(cv2.Stitcher_PANORAMA)
+    else:
+        stitcher = cv2.createStitcher(cv2.Stitcher_SCANS)
     status, pano = stitcher.stitch(imgs)
     if status != cv2.Stitcher_OK:
         print("Can't stitch images, error code = %d" % status)

@@ -5,8 +5,8 @@ import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography;
-//var baseUrl = "http://localhost:5000";
-var baseUrl = "";
+var baseUrl = "http://localhost:5000";
+//var baseUrl = "";
 
 export default class Sift extends React.Component{
     constructor(props) {

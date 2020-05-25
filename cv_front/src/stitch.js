@@ -4,8 +4,8 @@ import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 const { Title, Paragraph, Text } = Typography;
-//var baseUrl = "http://localhost:5000";
-var baseUrl = "";
+var baseUrl = "http://localhost:5000";
+//var baseUrl = "";
 
 
 export default class Sift extends React.Component{
@@ -14,21 +14,33 @@ export default class Sift extends React.Component{
     wrapperCol: { span: 12 },
   };
 
+  direction_text = <Form.Item name="direction" label="拼接方式" initialValue={1}>
+                      <Radio.Group name="radiogroup">
+                        <Radio value={1}>横向拼接</Radio>
+                        <Radio value={2}>纵向拼接</Radio>
+                      </Radio.Group>
+                    </Form.Item>;
+
+  color_text =  <Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
+                  <Switch defaultChecked/>
+                </Form.Item>;
+
+  mode_text = <Form.Item name="mode" label="拼接模式" help="全景模式适合拼接相机照片（透视变换），扫描模式适合拼接扫描图片（仿射变换）" initialValue={1}>
+                <Radio.Group name="radiogroup">
+                  <Radio value={1}>全景模式</Radio>
+                  <Radio value={2}>扫描模式</Radio>
+                </Radio.Group>
+              </Form.Item>;
+
   state = {
     pics:[],
     out_pic:null,
     output:<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />,
     pic_help:"",
     pic_num:2,
-    direction:<Form.Item name="direction" label="拼接方式" initialValue={1}>
-                <Radio.Group name="radiogroup">
-                  <Radio value={1}>横向拼接</Radio>
-                  <Radio value={2}>纵向拼接</Radio>
-                </Radio.Group>
-              </Form.Item>,
-    color: <Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
-            <Switch defaultChecked/>
-          </Form.Item>
+    direction:this.direction_text,
+    color: this.color_text,
+    mode:this.mode_text
   }
 
   getPic = (val) =>{
@@ -67,7 +79,8 @@ export default class Sift extends React.Component{
           'image':this.state.pics,
           'pic_num':values.pic_num,
           'color_adjust':values.color_adjust,
-          'direction':values.direction
+          'direction':values.direction,
+          'mode':values.mode
         },
       })
       .then((res) => {
@@ -111,21 +124,14 @@ export default class Sift extends React.Component{
     console.log(e.target.value)
     if(e.target.value == 2){
       this.setState({
-        direction:<Form.Item name="direction" label="拼接方式" initialValue={1}>
-                    <Radio.Group name="radiogroup">
-                      <Radio value={1}>横向拼接</Radio>
-                       <Radio value={2}>纵向拼接</Radio>
-                    </Radio.Group>
-                  </Form.Item>,
-        color:<Form.Item name="color_adjust" label="色差调节" help="开启可自动调节图片色彩差异，提高拼接效果，建议开启" initialValue={true}>
-                <Switch defaultChecked/>
-              </Form.Item>
+        color:this.color_text,
+        mode:<div></div>,
       });
     }
     else{
       this.setState({
-        direction:<div></div>,
         color:<div></div>,
+        mode:this.mode_text,
       });
     }
     this.setState({
@@ -153,6 +159,7 @@ export default class Sift extends React.Component{
                   </Form.Item>
                   {this.state.direction}
                   {this.state.color}
+                  {this.state.mode}
                   <Form.Item label="上传图片"  help={this.state.pic_help}>
                     <PicturesWall max_pic={this.state.pic_num}  getChildValue={this.getPic.bind(this)}></PicturesWall>
                   </Form.Item>
