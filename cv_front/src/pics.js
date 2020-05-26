@@ -1,8 +1,8 @@
 import { Upload, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React from 'react';
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+import './config.js'
+var baseUrl = global.url.baseUrl
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {

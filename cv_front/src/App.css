@@ -27,3 +27,16 @@
   height:40px;
   padding:10px;
 }
+
+.example-link-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0;
+  margin-left: 0px;
+}
+
+.example-link {
+  float: right;
+  margin-right: 0;
+  margin-left: 0px;
+}

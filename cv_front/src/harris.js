@@ -1,12 +1,12 @@
 import React,{ useState }  from 'react';
+import './config.js'
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,InputNumber,Switch,Spin} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,InputNumber,Switch,Spin,PageHeader} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 
-const { Title, Paragraph, Text } = Typography;
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+const {  Paragraph} = Typography;
+var baseUrl = global.url.baseUrl;
 
 export default class Sift extends React.Component{
     constructor(props) {
@@ -77,7 +77,10 @@ export default class Sift extends React.Component{
     render(){
       return (
           <Typography>
-            <Title level={4}>Harris角点检测</Title>
+            <PageHeader
+              title="Harris角点检测"
+              style={{paddingLeft:'0px',paddingBottom:'0px'}}
+            ></PageHeader>
             <Divider />
             <Paragraph>
               相关介绍

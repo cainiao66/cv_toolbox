@@ -1,11 +1,11 @@
 import React from 'react';
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,PageHeader} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
-const { Title, Paragraph, Text } = Typography;
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+import './config.js'
+const {  Paragraph} = Typography;
+var baseUrl = global.url.baseUrl
 
 export default class Sift extends React.Component{
     formItemLayout = {
@@ -70,7 +70,10 @@ export default class Sift extends React.Component{
     render(){
       return (
           <Typography>
-            <Title level={4}>SIFT尺度不变特征检测</Title>
+            <PageHeader
+              title="SIFT尺度不变特征检测"
+              style={{paddingLeft:'0px',paddingBottom:'0px'}}
+            ></PageHeader>
             <Divider />
             <Paragraph>
               相关介绍

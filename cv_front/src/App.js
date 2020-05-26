@@ -6,6 +6,7 @@ import { CodeSandboxOutlined,MenuUnfoldOutlined,MenuFoldOutlined,MonitorOutlined
 import Harris from './harris'
 import Sift from './sift'
 import Stitch from './stitch'
+import StitchDoc from './stitch_doc'
 const { Header, Content, Sider,Footer } = Layout;
 
 export default class App extends React.Component {
@@ -18,7 +19,7 @@ export default class App extends React.Component {
       this.setState ({content: <Harris></Harris>})
     }
     else if(e.key==="3"){
-      this.setState ({content:<Stitch></Stitch>})
+      this.setState ({content:<Stitch parent={this}></Stitch>})
     }
   };
   toggleCollapsed = () => {
@@ -29,6 +30,19 @@ export default class App extends React.Component {
   state = {
     content : <Sift></Sift>,
     collapsed: false,
+  }
+  getChildrenMsg = (result, msg) => {
+    // console.log(result, msg)
+    if(msg==1){
+      this.setState({
+        content: <Stitch parent={this}></Stitch>
+      })
+    }
+    else if(msg==2){
+      this.setState({
+        content: <StitchDoc parent={this}></StitchDoc>
+      })
+    }
   }
   render(){
     return (

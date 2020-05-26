@@ -1,12 +1,19 @@
+import './App.css';
 import React from 'react';
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio,Progress} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio,PageHeader} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
-const { Title, Paragraph, Text } = Typography;
-var baseUrl = "http://localhost:5000";
-//var baseUrl = "";
+import './config.js'
+const {  Paragraph} = Typography;
+var baseUrl = global.url.baseUrl
 
+const IconLink = ({ src, text }) => (
+  <a className="example-link">
+    <img className="example-link-icon" src={src} alt={text} />
+    {text}
+  </a>
+);
 
 export default class Sift extends React.Component{
   formItemLayout = {
@@ -25,7 +32,8 @@ export default class Sift extends React.Component{
                   <Switch defaultChecked/>
                 </Form.Item>;
 
-  mode_text = <Form.Item name="mode" label="拼接模式" help="全景模式适合拼接相机照片（透视变换），扫描模式适合拼接扫描图片（仿射变换）" initialValue={1}>
+  mode_text = <Form.Item name="mode" label="拼接模式" help="全景模式适合拼接相机照片（透视变换），扫描模式适合拼接扫描图片（仿射变换）" 
+  initialValue={1}>
                 <Radio.Group name="radiogroup">
                   <Radio value={1}>全景模式</Radio>
                   <Radio value={2}>扫描模式</Radio>
@@ -40,7 +48,7 @@ export default class Sift extends React.Component{
     pic_num:2,
     direction:this.direction_text,
     color: this.color_text,
-    mode:this.mode_text
+    mode:<div></div>
   }
 
   getPic = (val) =>{
@@ -56,6 +64,10 @@ export default class Sift extends React.Component{
     a.download =  "image.jpg"; 
     a.href = this.state.out_pic; 
     a.dispatchEvent(event); 
+  }
+
+  openDoc = (val)=>{
+    this.props.parent.getChildrenMsg(this,2)
   }
 
 
@@ -142,7 +154,15 @@ export default class Sift extends React.Component{
   render(){
     return (
         <Typography>
-          <Title level={4}>图片全景拼接</Title>
+          <PageHeader
+            title="图片全景拼接"
+            style={{paddingLeft:'0px',paddingBottom:'0px'}}
+            extra={[
+              <Button key="1" type="link" onClick={this.openDoc}>
+                <IconLink src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" text=" Doc"/>
+              </Button>
+            ]}
+          ></PageHeader>
           <Divider />
           <Paragraph>
             目前支持双图拼接和多图拼接（最多8张图片）两种模式，双图拼接支持横向纵向两种模式，多图拼接目前只支持横向拼接

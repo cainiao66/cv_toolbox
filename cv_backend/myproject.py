@@ -74,7 +74,7 @@ def cv_stitch():
         elif flag == -1:
             return jsonify("-1")
     else:
-        mode=str(data['color_mode'])
+        mode=str(data['mode'])
         flag = Stitch2(images,images[0],mode)
         if flag == -2:
             return jsonify("-2")
