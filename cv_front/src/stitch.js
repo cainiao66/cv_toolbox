@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import PicturesWall from './pics'
-import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio,PageHeader} from 'antd';
+import {Form,Button, Typography, Divider,Row, Col,Card,Empty,message,Spin,Switch,Radio,PageHeader,Slider} from 'antd';
 import axios from "axios";
 import { DownloadOutlined } from '@ant-design/icons';
 import './config.js'
@@ -40,6 +40,10 @@ export default class Sift extends React.Component{
                 </Radio.Group>
               </Form.Item>;
 
+  brightness_text = <Form.Item name="pic_brightness" label="图像亮度" initialValue={10} help="亮度值为10则不变，小于10变暗，大于10变亮">
+                      <Slider min={1} max={20}/>
+                    </Form.Item>;
+
   state = {
     pics:[],
     out_pic:null,
@@ -48,7 +52,8 @@ export default class Sift extends React.Component{
     pic_num:2,
     direction:this.direction_text,
     color: this.color_text,
-    mode:<div></div>
+    mode:<div></div>,
+    brightness:<div></div>
   }
 
   getPic = (val) =>{
@@ -69,6 +74,7 @@ export default class Sift extends React.Component{
   openDoc = (val)=>{
     this.props.parent.getChildrenMsg(this,2)
   }
+
 
 
   onFinish = values => {
@@ -92,7 +98,10 @@ export default class Sift extends React.Component{
           'pic_num':values.pic_num,
           'color_adjust':values.color_adjust,
           'direction':values.direction,
-          'mode':values.mode
+          'mode':values.mode,
+          'pic_brightness_mode':values.pic_brightness_mode,
+          'pic_brightness':values.pic_brightness,
+          'pic_style':values.pic_style,
         },
       })
       .then((res) => {
@@ -134,7 +143,7 @@ export default class Sift extends React.Component{
 
   onChange = e =>{
     console.log(e.target.value)
-    if(e.target.value == 2){
+    if(e.target.value === 2){
       this.setState({
         color:this.color_text,
         mode:<div></div>,
@@ -149,6 +158,20 @@ export default class Sift extends React.Component{
     this.setState({
       pic_num: e.target.value,
     });
+  }
+
+  onChangeBrightness = e =>{
+    console.log(e.target.value)
+    if(e.target.value === 3){
+      this.setState({
+        brightness:this.brightness_text,
+      });
+    }
+    else{
+      this.setState({
+        brightness:<div></div>,
+      });
+    }
   }
 
   render(){
@@ -180,6 +203,23 @@ export default class Sift extends React.Component{
                   {this.state.direction}
                   {this.state.color}
                   {this.state.mode}
+                  <Form.Item name="pic_brightness_mode" label="亮度调节" initialValue={1} help="亮度值为10则不变，小于10变暗，大于10变亮">
+                    <Radio.Group name="radiogroup" onChange={this.onChangeBrightness}>
+                      <Radio value={1}>不变</Radio>
+                      <Radio value={2}>自动调节</Radio>
+                      <Radio value={3}>手动调节</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                  {this.state.brightness}
+                  <Form.Item name="pic_style" label="图像风格" initialValue={1}>
+                    <Radio.Group name="radiogroup">
+                      <Radio value={1}>原图</Radio>
+                      <Radio value={2}>素描</Radio>
+                      <Radio value={3}>线稿</Radio>
+                      <Radio value={4}>动漫</Radio>
+                      <Radio value={5}>梵高星空</Radio>
+                    </Radio.Group>
+                  </Form.Item>
                   <Form.Item label="上传图片"  help={this.state.pic_help}>
                     <PicturesWall max_pic={this.state.pic_num}  getChildValue={this.getPic.bind(this)}></PicturesWall>
                   </Form.Item>

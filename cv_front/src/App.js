@@ -7,6 +7,7 @@ import Harris from './harris'
 import Sift from './sift'
 import Stitch from './stitch'
 import StitchDoc from './stitch_doc'
+import Basic from './basic'
 const { Header, Content, Sider,Footer } = Layout;
 
 export default class App extends React.Component {
@@ -21,6 +22,9 @@ export default class App extends React.Component {
     else if(e.key==="3"){
       this.setState ({content:<Stitch parent={this}></Stitch>})
     }
+    else if(e.key==="4"){
+      this.setState ({content:<Basic></Basic>})
+    }
   };
   toggleCollapsed = () => {
     this.setState({
@@ -28,7 +32,7 @@ export default class App extends React.Component {
     });
   };
   state = {
-    content : <Sift></Sift>,
+    content : <Basic></Basic>,
     collapsed: false,
   }
   getChildrenMsg = (result, msg) => {
@@ -59,10 +63,13 @@ export default class App extends React.Component {
             <Menu 
               onClick={this.handleClick}
               mode="inline"
-              defaultSelectedKeys={['1']}
+              defaultSelectedKeys={['4']}
               theme="light"
               className="my_menu"
             >
+              <Menu.Item key="4" icon={<MonitorOutlined />}>
+                图像基本操作
+              </Menu.Item>
               <Menu.Item key="1" icon={<MonitorOutlined />}>
                 SIFT特征检测
               </Menu.Item>

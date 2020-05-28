@@ -7,6 +7,7 @@ import os
 import base64
 from stitch import Stitch
 from stitch import Stitch2
+from basic import Basic
 
 app = Flask(__name__)
 CORS(app, resources=r'/*')
@@ -28,6 +29,22 @@ def upload():
             return jsonify(filename)
         else:
             return jsonify("fail")
+
+@app.route('/cv_basic',methods=['POST'])
+def cv_basic():
+    data = request.get_json(silent=True)
+    image = data['image']
+    brightness_mode = str(data['pic_brightness_mode'])
+    if(brightness_mode == '3'):
+        brightness = str(data['pic_brightness'])
+    else:
+        brightness = str(10)
+    style = str(data['pic_style'])
+    img = Basic('./upload/',image,brightness_mode,brightness,style)
+    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
+        f = f.read()
+        img_stream = base64.b64encode(f).decode()
+    return img_stream
 
 @app.route('/cv_sift',methods=['POST'])
 def cv_sift():
@@ -59,9 +76,9 @@ def cv_stitch():
     '''
         -1: 匹配点数目不足
         -2：匹配异常
-        -3：暂不支持多图拼接
     '''
     data = request.get_json(silent=True)
+    print(data)
     images = data['image']
     if(data['pic_num']==2):
         direction = str(data['direction'])
@@ -78,6 +95,13 @@ def cv_stitch():
         flag = Stitch2(images,images[0],mode)
         if flag == -2:
             return jsonify("-2")
+    brightness_mode = str(data['pic_brightness_mode'])
+    if(brightness_mode == '3'):
+        brightness = str(data['pic_brightness'])
+    else:
+        brightness = str(10)
+    style = str(data['pic_style'])
+    img = Basic('./output/'+images[0][:-4]+'/',images[0],brightness_mode,brightness,style)
     with open('./output/'+images[0][:-4]+'/'+images[0],'rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
