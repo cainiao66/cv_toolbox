@@ -10,12 +10,17 @@
 #              pip install opencv-contrib-python==3.4.2.16
 
 import cv2
+import os
 
 def Sift(file):
-    img = cv2.imread('./upload/'+file)
+    img = cv2.imread('./upload/' + file[:-4] + '/' + file)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     sift = cv2.xfeatures2d.SIFT_create()
     keypoints,descriptor = sift.detectAndCompute(gray,None)
     img = cv2.drawKeypoints(image=img,keypoints = keypoints,outImage=img,color=(255,0,255),flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv2.imwrite('./output/'+file,img)
+    path = './output/' + file[:-4] + '/'
+    isExists = os.path.exists(path)
+    if not isExists:
+        os.makedirs(path)
+    cv2.imwrite(path + file, img)
     return img

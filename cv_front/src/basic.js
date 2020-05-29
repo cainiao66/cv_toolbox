@@ -114,15 +114,23 @@ export default class Sift extends React.Component{
                             </Radio.Group>
                         </Form.Item>
                         {this.state.brightness}
-                        <Form.Item name="pic_style" label="图像风格" initialValue={1}>
+                        <Form.Item name="pic_style" label="风格迁移" initialValue={1} help="受服务器性能制约，若输入图片较大，后九种风格可能会运行失败">
                             <Radio.Group name="radiogroup">
-                                <Radio value={1}>原图</Radio>
-                                <Radio value={2}>素描</Radio>
-                                <Radio value={3}>线稿</Radio>
-                                <Radio value={4}>动漫</Radio>
-                                <Radio value={5}>梵高星空</Radio>
+                            <Radio value={1}>原图</Radio>
+                            <Radio value={2}>素描</Radio>
+                            <Radio value={3}>线稿</Radio>
+                            <Radio value={4}>动漫</Radio>
+                            <Radio value={5}>星空</Radio>
+                            <Radio value={6}>糖果</Radio>
+                            <Radio value={7}>羽毛</Radio>
+                            <Radio value={8}>镶嵌</Radio>
+                            <Radio value={9}>谬斯</Radio>
+                            <Radio value={10}>呐喊</Radio>
+                            <Radio value={11}>海浪</Radio>
+                            <Radio value={12}>乌迪妮</Radio>
+                            <Radio value={13}>康丁斯基</Radio>
                             </Radio.Group>
-                        </Form.Item>
+                         </Form.Item>
                         <Form.Item label="上传图片">
                             <PicturesWall max_pic={1} getChildValue={this.getPic.bind(this)}></PicturesWall>
                         </Form.Item>

@@ -8,10 +8,10 @@ import base64
 from stitch import Stitch
 from stitch import Stitch2
 from basic import Basic
+from yolo_detect import YoloDetect
 
 app = Flask(__name__)
 CORS(app, resources=r'/*')
-app.config['UPLOAD_FOLDER'] = './upload'
 
 
 @app.route("/cv")
@@ -23,9 +23,13 @@ def upload():
     if request.method == 'POST':
         file = request.files['file']
         if file:
-            files = os.listdir(app.config['UPLOAD_FOLDER'])
+            files = os.listdir('./upload/')
             filename = str(len(files)) + '.jpg'
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            path = './upload/' + filename[:-4] + '/'
+            isExists = os.path.exists(path)
+            if not isExists:
+                os.makedirs(path)
+            file.save(path+filename)
             return jsonify(filename)
         else:
             return jsonify("fail")
@@ -40,7 +44,7 @@ def cv_basic():
     else:
         brightness = str(10)
     style = str(data['pic_style'])
-    img = Basic('./upload/',image,brightness_mode,brightness,style)
+    img = Basic('./upload/'+image[:-4]+'/',image,brightness_mode,brightness,style)
     with open('./output/'+image[:-4]+'/'+image,'rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
@@ -51,7 +55,7 @@ def cv_sift():
     data = request.get_json(silent=True)
     image = data['image']
     img = Sift(image)
-    with open('./output/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -66,7 +70,7 @@ def cv_harris():
         if_dilate = False
     threshold = float(data['threshold'])
     img = Harris(image,if_dilate,threshold)
-    with open('./output/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -103,6 +107,18 @@ def cv_stitch():
     style = str(data['pic_style'])
     img = Basic('./output/'+images[0][:-4]+'/',images[0],brightness_mode,brightness,style)
     with open('./output/'+images[0][:-4]+'/'+images[0],'rb') as f:
+        f = f.read()
+        img_stream = base64.b64encode(f).decode()
+    return img_stream
+
+@app.route('/cv_yolo',methods=['POST'])
+def cv_yolo():
+    data = request.get_json(silent=True)
+    print(data)
+    image = data['image']
+    threshold = float(data['threshold'])
+    YoloDetect('./upload/'+image[:-4],threshold)
+    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream

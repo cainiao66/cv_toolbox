@@ -2,12 +2,13 @@ import './App.css';
 import React from 'react';
 import { Layout, Menu ,Button} from 'antd';
 import { CodeSandboxOutlined,MenuUnfoldOutlined,MenuFoldOutlined,MonitorOutlined
-,PictureOutlined,ProjectOutlined  } from '@ant-design/icons';
+,PictureOutlined,ProjectOutlined,EditOutlined} from '@ant-design/icons';
 import Harris from './harris'
 import Sift from './sift'
 import Stitch from './stitch'
 import StitchDoc from './stitch_doc'
 import Basic from './basic'
+import Yolo from './yolo'
 const { Header, Content, Sider,Footer } = Layout;
 
 export default class App extends React.Component {
@@ -24,6 +25,9 @@ export default class App extends React.Component {
     }
     else if(e.key==="4"){
       this.setState ({content:<Basic></Basic>})
+    }
+    else if(e.key==="5"){
+      this.setState ({content:<Yolo></Yolo>})
     }
   };
   toggleCollapsed = () => {
@@ -67,7 +71,7 @@ export default class App extends React.Component {
               theme="light"
               className="my_menu"
             >
-              <Menu.Item key="4" icon={<MonitorOutlined />}>
+              <Menu.Item key="4" icon={<EditOutlined />}>
                 图像基本操作
               </Menu.Item>
               <Menu.Item key="1" icon={<MonitorOutlined />}>
@@ -78,6 +82,9 @@ export default class App extends React.Component {
               </Menu.Item>
               <Menu.Item key="3" icon={<PictureOutlined />}>
                 图片全景拼接
+              </Menu.Item>
+              <Menu.Item key="5" icon={<MonitorOutlined />}>
+                yolo目标检测
               </Menu.Item>
             </Menu>
           </Sider>

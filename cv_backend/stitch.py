@@ -42,7 +42,7 @@ def Stitch2(filenames,name,mode):
     time1 = time.time()
     imgs = []
     for img_name in filenames:
-        img = cv2.imread('./upload/'+img_name,1)
+        img = cv2.imread('./upload/'+ img_name[:-4] + '/'+img_name,1)
         imgs.append(img)
     stitcher = None
     if mode=='1':
@@ -62,8 +62,8 @@ def Stitch2(filenames,name,mode):
 
 def Stitch(file1,file2,name,direction,color_adjust):
     time1 = time.time()
-    img2 = cv2.imread('./upload/' + file1, 1)
-    img1 = cv2.imread('./upload/' + file2, 1)
+    img2 = cv2.imread('./upload/' + file1[:-4] + '/' + file1, 1)
+    img1 = cv2.imread('./upload/' + file2[:-4] + '/'+file2, 1)
     sift = cv2.xfeatures2d.SIFT_create()
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)

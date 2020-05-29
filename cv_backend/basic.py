@@ -16,8 +16,8 @@ def Basic(input_path,file_name,brightness_mode,brightness,style):
         img = Img2Line(img)
     elif(style=='4'):
         img = Img2Anime(img)
-    elif(style=='5'):
-        img=Img2Gogh(img)
+    elif(style!='1'):
+        img=Img2Other(img,style)
     if(brightness_mode == '3'):
         gamma = 10.0/float(brightness)
         img = ImgBrighten(img,gamma)
@@ -100,10 +100,27 @@ def Img2Anime(img):
     return img_cartoon
 
 
-# 梵高星空
-def Img2Gogh(img):
+# 梵高星空等其他
+def Img2Other(img,style):
     # 加载模型
-    net = cv2.dnn.readNetFromTorch('./model/starry_night.t7')
+    if(style=='5'):
+        net = cv2.dnn.readNetFromTorch('./model/starry_night.t7')
+    elif(style=='6'):
+        net = cv2.dnn.readNetFromTorch('./model/candy.t7')
+    elif(style=='7'):
+        net = cv2.dnn.readNetFromTorch('./model/feathers.t7')
+    elif(style=='8'):
+        net = cv2.dnn.readNetFromTorch('./model/mosaic.t7')
+    elif(style=='9'):
+        net = cv2.dnn.readNetFromTorch('./model/la_muse.t7')
+    elif(style=='10'):
+        net = cv2.dnn.readNetFromTorch('./model/the_scream.t7')
+    elif(style=='11'):
+        net = cv2.dnn.readNetFromTorch('./model/the_wave.t7')
+    elif(style=='12'):
+        net = cv2.dnn.readNetFromTorch('./model/udnie.t7')
+    elif(style=='13'):
+        net = cv2.dnn.readNetFromTorch('./model/composition_vii.t7')
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
     # 读取图片
     image = img
