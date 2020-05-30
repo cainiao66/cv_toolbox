@@ -24,7 +24,7 @@ def upload():
         file = request.files['file']
         if file:
             files = os.listdir('./upload/')
-            filename = str(len(files)) + '.jpg'
+            filename = str(len(files)) + '.png'
             path = './upload/' + filename[:-4] + '/'
             isExists = os.path.exists(path)
             if not isExists:
@@ -45,7 +45,7 @@ def cv_basic():
         brightness = str(10)
     style = str(data['pic_style'])
     img = Basic('./upload/'+image[:-4]+'/',image,brightness_mode,brightness,style)
-    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image[:-4]+'.jpg','rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -55,7 +55,7 @@ def cv_sift():
     data = request.get_json(silent=True)
     image = data['image']
     img = Sift(image)
-    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image[:-4]+'.jpg','rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -70,7 +70,7 @@ def cv_harris():
         if_dilate = False
     threshold = float(data['threshold'])
     img = Harris(image,if_dilate,threshold)
-    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image[:-4]+'.jpg','rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -84,8 +84,8 @@ def cv_stitch():
     data = request.get_json(silent=True)
     print(data)
     images = data['image']
+    direction = str(data['direction'])
     if(data['pic_num']==2):
-        direction = str(data['direction'])
         color_adjust = str(data['color_adjust'])
         flag = Stitch(images[0],images[1],images[0],direction,color_adjust)
         if flag == -2:
@@ -96,7 +96,7 @@ def cv_stitch():
             return jsonify("-1")
     else:
         mode=str(data['mode'])
-        flag = Stitch2(images,images[0],mode)
+        flag = Stitch2(images,images[0],mode,direction)
         if flag == -2:
             return jsonify("-2")
     brightness_mode = str(data['pic_brightness_mode'])
@@ -105,8 +105,8 @@ def cv_stitch():
     else:
         brightness = str(10)
     style = str(data['pic_style'])
-    img = Basic('./output/'+images[0][:-4]+'/',images[0],brightness_mode,brightness,style)
-    with open('./output/'+images[0][:-4]+'/'+images[0],'rb') as f:
+    img = Basic('./output/'+images[0][:-4]+'/',images[0][:-4]+'.jpg',brightness_mode,brightness,style)
+    with open('./output/'+images[0][:-4]+'/'+images[0][:-4]+'.jpg','rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream
@@ -118,7 +118,7 @@ def cv_yolo():
     image = data['image']
     threshold = float(data['threshold'])
     YoloDetect('./upload/'+image[:-4],threshold)
-    with open('./output/'+image[:-4]+'/'+image,'rb') as f:
+    with open('./output/'+image[:-4]+'/'+image[:-4]+'.jpg','rb') as f:
         f = f.read()
         img_stream = base64.b64encode(f).decode()
     return img_stream

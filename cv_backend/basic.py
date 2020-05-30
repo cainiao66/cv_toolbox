@@ -21,7 +21,7 @@ def Basic(input_path,file_name,brightness_mode,brightness,style):
     if(brightness_mode == '3'):
         gamma = 10.0/float(brightness)
         img = ImgBrighten(img,gamma)
-    cv2.imwrite(path+file_name,img)
+    cv2.imwrite(path+file_name[:-4]+'.jpg',img)
     return img
 
 # 图像均衡化

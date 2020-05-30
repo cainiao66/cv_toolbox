@@ -3,6 +3,7 @@ import numpy as np
 import math
 import os
 import time
+from PIL import Image
 
 MIN_MATCH_COUNT = 20
 
@@ -38,12 +39,23 @@ MIN_MATCH_COUNT = 20
 #         newtemp.append(res)
 #     return True,step,newtemp
 
-def Stitch2(filenames,name,mode):
+def Stitch2(filenames,name,mode,direction):
     time1 = time.time()
-    imgs = []
-    for img_name in filenames:
-        img = cv2.imread('./upload/'+ img_name[:-4] + '/'+img_name,1)
-        imgs.append(img)
+    path = './output/' + name[:-4]+'/'
+    if(direction == '2'):
+        for img_name in filenames:
+            img = Image.open('./upload/'+ img_name[:-4] + '/'+img_name)
+            img = img.transpose(Image.ROTATE_270)
+            img.save('./upload/'+ img_name[:-4] + '/temp'+img_name)
+        imgs = []
+        for img_name in filenames:
+            img = cv2.imread('./upload/'+ img_name[:-4] + '/temp'+img_name, 1)
+            imgs.append(img)
+    else:
+        imgs = []
+        for img_name in filenames:
+            img = cv2.imread('./upload/'+ img_name[:-4] + '/'+img_name,1)
+            imgs.append(img)
     stitcher = None
     if mode=='1':
         stitcher = cv2.createStitcher(cv2.Stitcher_PANORAMA)
@@ -53,11 +65,14 @@ def Stitch2(filenames,name,mode):
     if status != cv2.Stitcher_OK:
         print("Can't stitch images, error code = %d" % status)
         return -2
-    path = './output/' + name[:-4]+'/'
     isExists = os.path.exists(path)
     if not isExists:
         os.makedirs(path)
-    cv2.imwrite(path+name, pano);
+    cv2.imwrite(path+name[:-4]+'.jpg', pano)
+    if(direction == '2'):
+        img = Image.open(path+name[:-4]+'.jpg')
+        img = img.transpose(Image.ROTATE_90)
+        img.save(path+name[:-4]+'.jpg')
     print("stitch2:",time.time()-time1)
 
 def Stitch(file1,file2,name,direction,color_adjust):
@@ -144,18 +159,17 @@ def Stitch(file1,file2,name,direction,color_adjust):
     isExists = os.path.exists(path)
     if not isExists:
         os.makedirs(path)
-    cv2.imwrite(path+name, res)
+    cv2.imwrite(path+name[:-4]+'.jpg', res)
     print("stitch1:",time.time()-time1)
     return 0
 
 
 
 if __name__ == '__main__':
-    files = ['0.jpg','1.jpg']
+    files = ['0.png','1.png']
     name = files[0]
-    direction = '2'
+    direction = '1'
     color_adjust = 'True'
-    Stitch(files[0],files[1], name, direction, color_adjust)
-    Stitch2(files,name)
+    Stitch2(files,name,'1',direction)
 
 

@@ -13,7 +13,7 @@ import cv2
 import os
 
 def Sift(file):
-    img = cv2.imread('./upload/' + file[:-4] + '/' + file)
+    img = cv2.imread('./upload/' + file[:-4] + '/' + file[:-4]+'.png')
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     sift = cv2.xfeatures2d.SIFT_create()
     keypoints,descriptor = sift.detectAndCompute(gray,None)
@@ -22,5 +22,5 @@ def Sift(file):
     isExists = os.path.exists(path)
     if not isExists:
         os.makedirs(path)
-    cv2.imwrite(path + file, img)
+    cv2.imwrite(path + file[:-4]+'.jpg', img)
     return img

@@ -34,7 +34,7 @@ def YoloDetect(image_folder,threshold):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
 
-    my_path = image_folder+'/'+image_folder.split('/')[-1]+'.jpg'
+    my_path = image_folder+'/'+image_folder.split('/')[-1]+'.png'
     img = Image.open(my_path ).convert('RGB')
     img.save(my_path)
 
@@ -120,6 +120,7 @@ def YoloDetect(image_folder,threshold):
         filename = path.split("/")[-1].split(".")[0]
         if('\\' in path): #windows
             path = './output/'+filename.split("\\")[0]
+            filename = filename.split("\\")[0]
         else: #linux
             path = './output/'+filename+'/'
         isExists = os.path.exists(path)
