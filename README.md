@@ -35,7 +35,7 @@ pip install werkzeug
 pip install flask_cors 
 pip install opencv-python==3.4.4.19
 pip install opencv-contrib-python==3.4.2.16
-pip install matplotlob==2.2.3
+pip install matplotlib==2.2.3
 pip install torch==1.2.0
 pip install torchvision==0.4.0
 pip install tensorflow==1.13.1
